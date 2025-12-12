@@ -1,0 +1,10 @@
+services:
+  apia:
+    build:
+      context: .
+    ulimits:
+      core: 0
+    ports:
+      - "12349:12349"
+    restart: unless-stopped
+    privileged: true
