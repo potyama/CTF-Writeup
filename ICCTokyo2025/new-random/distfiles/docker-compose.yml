@@ -1,0 +1,11 @@
+services:
+  new-random:
+    build:
+      context: .
+    ports:
+      - "12348:12348"
+    restart: unless-stopped
+    deploy:
+      resources:
+        reservations:
+          cpus: "16.00"
