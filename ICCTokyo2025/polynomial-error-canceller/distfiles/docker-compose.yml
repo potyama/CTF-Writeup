@@ -1,0 +1,8 @@
+version: "3"
+
+services:
+  polynomial-error-canceller:
+    build: .
+    restart: always
+    ports:
+      - "2468:2468"
