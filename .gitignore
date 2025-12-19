@@ -1,2 +1,4 @@
 *.tar.gz
 *.zip
+*.txt
+.gdb_history
