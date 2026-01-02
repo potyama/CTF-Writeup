@@ -28,11 +28,13 @@ In this challenge, we deal with safe primes.
 
 ## solution
 From $`q = 2p + 1`$, we have
+
 $$
 N = pq = p(2p+1) = 2p^2 + p.
 $$
 
 In other words, $`p`$ is a solution to the quadratic equation
+
 $$
 2p^2+p-N = 0.
 $$
@@ -59,4 +61,4 @@ m = pow(c, d, n)
 
 print(long_to_bytes(m).decode())
 ```
-flag: `ctf4b{R3l4ted_pr1m3s_4re_vuLner4ble_n0_maTt3r_h0W_l4rGe_p_1s}`
+Flag: `ctf4b{R3l4ted_pr1m3s_4re_vuLner4ble_n0_maTt3r_h0W_l4rGe_p_1s}`
