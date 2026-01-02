@@ -27,11 +27,13 @@ else:
 ```
 ## Solution
 In this problem, we can obtain the flag by choosing `choice` such that
+
 $$
 a^{choice} \equiv 1\pmod p.
 $$\
 
 Now, when the modulus $`p`$ is a prime number, Fermat's little theorem tells us that
+
 $$
 a^{p-1} \equiv 1 \pmod p .
 $$
