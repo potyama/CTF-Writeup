@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inu Profile</title>
+    <link rel="stylesheet" href="https://unpkg.com/simpledotcss/simple.min.css">
+    <style>
+        .hidden {
+            display: none;
+        }
+
+        #profileAvatar {
+            text-align: center;
+            font-size: 10rem;
+        }
+    </style>
+</head>
+<body>
+    <h1>Inu Profile</h1>
+    <div id="welcome">
+        <h2>Register</h2>
+        <form>
+            <label>Username: <input type="text" id="username" required></label><br>
+            <label>Password: <input type="password" id="password" required></label><br>
+            <label>Avatar: <input type="text" id="avatar" placeholder="🐩"></label><br>
+            <label>Description: <input type="text" id="description" placeholder="I am a Samoyed."></label><br>
+            <button id="registerButton">Register</button>
+        </form>
+        <hr>
+        <h2>Log in</h2>
+        <form>
+            <label>Username: <input type="text" id="loginUsername" required></label><br>
+            <label>Password: <input type="password" id="loginPassword" required></label><br>
+            <button id="loginButton">Log in</button>
+        </form>
+    </div>
+    <div id="profile" class="hidden">
+        <h2 id="profileUsername"></h2>
+        <div id="profileAvatar"></div>
+        <p id="profileDescription"></p>
+        <hr>
+        <h2>Check other user's profile</h2>
+        <form>
+            <label>Username to show profile: <input type="text" id="checkUsername" required></label><br>
+            <button id="profileButton">Show profile</button>
+        </form>
+        <hr>
+        <button id="logoutButton">Log out</button>
+    </div>
+    <script>
+    const welcomePage = document.getElementById('welcome');
+    const profilePage = document.getElementById('profile');
+    let currentUsername;
+
+    function updateProfilePage(username=null) {
+        const path = username == null ? '/profile' : `/profile/${username}`;
+        fetch(path).then(r => r.json()).then(r => {
+            if ('message' in r) {
+                alert(r.message);
+                return;
+            }
+
+            if (username == null) {
+                document.getElementById('profileUsername').textContent = `${currentUsername}'s profile`;
+            } else {
+                document.getElementById('profileUsername').textContent = `${username}'s profile`;
+            }
+
+            document.getElementById('profileAvatar').textContent = r.avatar;
+            document.getElementById('profileDescription').textContent = r.description;
+        });
+    }
+
+    function loginOrRegistrationSucceeded() {
+        updateProfilePage();
+        welcomePage.classList.add('hidden');
+        profilePage.classList.remove('hidden');
+    }
+
+    document.getElementById('registerButton').addEventListener('click', e => {
+        const username = document.getElementById('username').value;
+        const password = document.getElementById('password').value;
+        const avatar = document.getElementById('avatar').value;
+        const description = document.getElementById('description').value;
+
+        fetch('/register', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                username, password,
+                profile: { avatar, description }
+            })
+        }).then(r => r.json()).then(r => {
+            const { message } = r;
+            if (message === 'ok') {
+                currentUsername = username;
+                loginOrRegistrationSucceeded();
+            } else {
+                alert(message);
+            }
+        });
+
+        e.preventDefault();
+        return false;
+    }, false);
+
+    document.getElementById('loginButton').addEventListener('click', e => {
+        const username = document.getElementById('loginUsername').value;
+        const password = document.getElementById('loginPassword').value;
+
+        fetch('/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username, password })
+        }).then(r => r.json()).then(r => {
+            const { message } = r;
+            if (message === 'ok') {
+                currentUsername = username;
+                loginOrRegistrationSucceeded();
+            } else {
+                alert(message);
+            }
+        });
+
+        e.preventDefault();
+        return false;
+    }, false);
+
+    document.getElementById('profileButton').addEventListener('click', e => {
+        updateProfilePage(document.getElementById('checkUsername').value);
+
+        e.preventDefault();
+        return false;
+    });
+
+    document.getElementById('logoutButton').addEventListener('click', () => {
+        location.reload();
+    }, false);
+    </script>
+</body>
+</html>
