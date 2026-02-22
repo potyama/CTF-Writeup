@@ -1,0 +1,33 @@
+from Crypto.Util.number import long_to_bytes
+from sage.all import *
+
+n = 24489807923160829853331858278295353076882496748356437425136070159565438013983472411573830861255379509744527059864107405391335396070661875605498494586447825822788450364814932266675738776136998383491576779465083731669643596152181500936763824489148317369367655622357267302603914593581625372679508643581386912033877057
+e = 65537
+c = 2878521000528279319502304373550176174118970956553760958198895851295578685557304197481600194317208136193632870619822554981703968844914526643614371981441816886658546070361109613762488893788055957762778868012759138069722552457665235326670564609161988943959614368453819936924812599400584406309008222724731151234689436
+
+p = 0x01ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+K = GF(p)
+a = K(0x01fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffc)
+b = K(0x0051953eb9618e1c9a1f929a21a0b68540eea2da725b99b315f3b8b489918ef109e156193951ec7e937b1652c0bd3bb1bf073573df883d2c34f1ef451fd46b503f00)
+EC = EllipticCurve(K, (a, b))
+
+R = PolynomialRing(K, "q")
+q = R.gen()
+
+poly = 4*K(n)*(q**3 + a * q + b) - q*(q**4 - 2*a*q**2 - 8*b*q + a**2)
+poly = poly.monic()
+
+roots = poly.roots(multiplicities=False)
+if not roots:
+    raise ValueError("No roots found")
+for root in roots:
+    r = n // int(root)
+    if r * int(root) == n:
+        q = int(root)
+        break
+
+phi = (q-1)*(r-1)
+d = pow(e, -1, phi)
+flag = pow(c, d, n)
+print(long_to_bytes(flag).decode())
+
